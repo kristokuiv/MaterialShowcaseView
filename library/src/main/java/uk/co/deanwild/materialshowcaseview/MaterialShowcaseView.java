@@ -47,6 +47,7 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
     private int mGravity;
     private int mContentBottomMargin;
     private int mContentTopMargin;
+    private boolean mAlreadyDismissed = false;
     private boolean mDismissOnTouch = false;
     private boolean mShouldRender = false; // flag to decide when we should actually render
     private boolean mRenderOverNav = false;
@@ -192,6 +193,9 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        if (mAlreadyDismissed) return true;
+        mAlreadyDismissed = true;
+
         if (mDismissOnTouch) {
             hide();
         }
@@ -799,7 +803,6 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
                 new Runnable() {
                     @Override
                     public void run() {
-                        if (mAnimationFactory == null) mAnimationFactory = new AnimationFactory();
                         mAnimationFactory.fadeOutView(target, mFadeDurationInMillis, new IAnimationFactory.AnimationEndListener() {
                             @Override
                             public void onAnimationEnd() {
