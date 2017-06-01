@@ -193,7 +193,7 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (mAlreadyDismissed) return true;
+        if (mAlreadyDismissed) return false;
         mAlreadyDismissed = true;
 
         if (mDismissOnTouch) {
