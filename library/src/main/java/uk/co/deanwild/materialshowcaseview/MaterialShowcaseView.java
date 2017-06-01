@@ -799,6 +799,7 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
                 new Runnable() {
                     @Override
                     public void run() {
+                        if (mAnimationFactory == null) mAnimationFactory = new AnimationFactory();
                         mAnimationFactory.fadeOutView(target, mFadeDurationInMillis, new IAnimationFactory.AnimationEndListener() {
                             @Override
                             public void onAnimationEnd() {
