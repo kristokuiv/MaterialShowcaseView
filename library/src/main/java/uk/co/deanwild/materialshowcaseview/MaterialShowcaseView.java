@@ -3,37 +3,24 @@ package uk.co.deanwild.materialshowcaseview;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
+import android.graphics.*;
 import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
 import uk.co.deanwild.materialshowcaseview.shape.NoShape;
 import uk.co.deanwild.materialshowcaseview.shape.RectangleShape;
 import uk.co.deanwild.materialshowcaseview.shape.Shape;
 import uk.co.deanwild.materialshowcaseview.target.Target;
 import uk.co.deanwild.materialshowcaseview.target.ViewTarget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -67,6 +54,7 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
     private AnimationFactory mAnimationFactory;
     private boolean mShouldAnimate = true;
     private long mFadeDurationInMillis = ShowcaseConfig.DEFAULT_FADE_TIME;
+    private long mHideTimeoutInMillis = 0;
     private Handler mHandler;
     private long mDelayInMillis = ShowcaseConfig.DEFAULT_DELAY;
     private int mBottomMargin = 0;
@@ -418,6 +406,10 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
         mFadeDurationInMillis = fadeDurationInMillis;
     }
 
+    private void setHideTimeout(long timeoutInMillis) {
+        mHideTimeoutInMillis = timeoutInMillis;
+    }
+
     private void setTargetTouchable(boolean targetTouchable){
         mTargetTouchable = targetTouchable;
     }
@@ -617,6 +609,11 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
             return this;
         }
 
+        public Builder setHideTimeout(int hideTimeoutInMillis) {
+            showcaseView.setHideTimeout(hideTimeoutInMillis);
+            return this;
+        }
+
         public Builder setListener(IShowcaseListener listener) {
             showcaseView.addShowcaseListener(listener);
             return this;
@@ -797,14 +794,16 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
     }
 
     public void fadeOut() {
-
-        mAnimationFactory.fadeOutView(this, mFadeDurationInMillis, new IAnimationFactory.AnimationEndListener() {
-            @Override
-            public void onAnimationEnd() {
-                setVisibility(INVISIBLE);
-                removeFromWindow();
-            }
-        });
+        MaterialShowcaseView target = this;
+        new Handler().postDelayed(
+                () -> mAnimationFactory.fadeOutView(target, mFadeDurationInMillis, new IAnimationFactory.AnimationEndListener() {
+                    @Override
+                    public void onAnimationEnd() {
+                        setVisibility(INVISIBLE);
+                        removeFromWindow();
+                    }
+                }),
+                mHideTimeoutInMillis);
     }
 
     public void resetSingleUse() {
