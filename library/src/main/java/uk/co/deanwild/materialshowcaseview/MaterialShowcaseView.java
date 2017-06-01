@@ -794,7 +794,7 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
     }
 
     public void fadeOut() {
-        MaterialShowcaseView target = this;
+        final MaterialShowcaseView target = this;
         new Handler().postDelayed(
                 new Runnable() {
                     @Override
