@@ -199,7 +199,7 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
         if (mDismissOnTouch) {
             hide();
         }
-        if(mTargetTouchable && mTarget.getBounds().contains((int)event.getX(), (int)event.getY())){
+        if(mTargetTouchable){
             if(mDismissOnTargetTouch){
                 hide();
             }
